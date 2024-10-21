@@ -31,11 +31,12 @@ public class ZkRpcDiscovery implements RpcDiscovery {
     private RcpLoadBalance rcpLoadBalance;
 
     public ZkRpcDiscovery(String registerAddress, RcpLoadBalance balance) {
+        CuratorFramework client = null;
         try {
             // 均衡策略
             this.rcpLoadBalance = balance;
             // zk client
-            CuratorFramework client = CuratorFrameworkFactory.newClient(registerAddress, new ExponentialBackoffRetry(1000, 3));
+            client = CuratorFrameworkFactory.newClient(registerAddress, new ExponentialBackoffRetry(1000, 3));
             client.start();
 
             // 构建服务发现实例
@@ -48,6 +49,10 @@ public class ZkRpcDiscovery implements RpcDiscovery {
             this.serviceDiscovery.start();
         } catch (Exception e) {
             log.error("[ZkRpcDiscovery] exception",e);
+        } finally {
+            if (client != null) {
+                client.close();
+            }
         }
     }
 
