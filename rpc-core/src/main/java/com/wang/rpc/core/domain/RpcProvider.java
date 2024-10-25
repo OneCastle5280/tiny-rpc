@@ -16,7 +16,7 @@ public class RpcProvider {
     /**
      * provider 名称
      */
-    private String name;
+    private String serviceName;
     /**
      * 版本
      */

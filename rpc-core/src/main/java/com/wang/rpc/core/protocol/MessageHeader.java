@@ -1,6 +1,7 @@
 package com.wang.rpc.core.protocol;
 
 import com.wang.rpc.core.domain.enums.MessageStatusEnum;
+import com.wang.rpc.core.domain.enums.MessageTypeEnum;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -26,7 +27,7 @@ public class MessageHeader implements Serializable {
     private byte serialization;
 
     /**
-     * 报文类型 1byte
+     * 报文类型 1byte {@link MessageTypeEnum}
      */
     private byte type;
 

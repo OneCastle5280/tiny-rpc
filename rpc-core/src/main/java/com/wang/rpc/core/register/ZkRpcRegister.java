@@ -28,9 +28,10 @@ public class ZkRpcRegister implements RpcRegister{
      * @param registerAddress zk 注册地址
      */
     public ZkRpcRegister(String registerAddress) {
+        CuratorFramework client = null;
         try {
             // zk client
-            CuratorFramework client = CuratorFrameworkFactory.newClient(registerAddress, new ExponentialBackoffRetry(1000, 3));
+            client = CuratorFrameworkFactory.newClient(registerAddress, new ExponentialBackoffRetry(1000, 3));
             client.start();
 
             // 构建服务发现实例
@@ -43,6 +44,10 @@ public class ZkRpcRegister implements RpcRegister{
             this.serviceDiscovery.start();
         } catch (Exception e) {
             log.error("[ZkRpcRegister] exception", e);
+        } finally {
+            if (client != null) {
+                client.close();
+            }
         }
     }
 
@@ -50,7 +55,7 @@ public class ZkRpcRegister implements RpcRegister{
     public void register(RpcProvider provider) throws Exception {
         // 注册 rpc 接口
         ServiceInstance<RpcProvider> instance = ServiceInstance.<RpcProvider>builder()
-                .name(provider.getName())
+                .name(provider.getServiceName())
                 .address(provider.getAddress())
                 .port(provider.getPort())
                 .payload(provider)
@@ -62,7 +67,7 @@ public class ZkRpcRegister implements RpcRegister{
     public void unRegister(RpcProvider provider) throws Exception {
         // 下线 rpc 接口
         ServiceInstance<RpcProvider> instance = ServiceInstance.<RpcProvider>builder()
-                .name(provider.getName())
+                .name(provider.getServiceName())
                 .address(provider.getAddress())
                 .port(provider.getPort())
                 .payload(provider)
