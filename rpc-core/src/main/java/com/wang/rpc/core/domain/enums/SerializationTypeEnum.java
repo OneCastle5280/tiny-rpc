@@ -12,7 +12,7 @@ public enum SerializationTypeEnum {
      */
     HESSIAN((byte) 0);
 
-    private byte type;
+    private final byte type;
 
     SerializationTypeEnum(byte type) {
         this.type = type;

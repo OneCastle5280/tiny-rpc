@@ -17,7 +17,7 @@ public interface RpcConstants {
     /**
      * 消息版本
      */
-    short VERSION = 0x11;
+    byte VERSION = 0x11;
     /**
      * 消息头总长度
      */

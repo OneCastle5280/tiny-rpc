@@ -18,6 +18,7 @@
     <modules>
         <module>rpc-core</module>
         <module>rpc-server-spring-boot-starter</module>
+        <module>rpc-client-spring-boot-starter</module>
     </modules>
 
     <properties>

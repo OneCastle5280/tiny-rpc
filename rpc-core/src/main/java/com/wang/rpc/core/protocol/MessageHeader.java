@@ -24,7 +24,7 @@ public class MessageHeader implements Serializable {
     private byte version;
 
     /**
-     * 序列化算法 1byte
+     * 序列化算法 1byte {@link com.wang.rpc.core.domain.enums.SerializationTypeEnum}
      */
     private byte serialization;
 
