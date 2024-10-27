@@ -1,6 +1,14 @@
 package com.wang.rpc.core.codecs;
 
 import com.wang.rpc.core.constants.RpcConstants;
+import com.wang.rpc.core.domain.enums.MessageTypeEnum;
+import com.wang.rpc.core.domain.enums.SerializationTypeEnum;
+import com.wang.rpc.core.domain.request.TinyRpcRequest;
+import com.wang.rpc.core.domain.response.TinyRpcResponse;
+import com.wang.rpc.core.protocol.MessageHeader;
+import com.wang.rpc.core.protocol.MessageProtocol;
+import com.wang.rpc.core.serialization.RpcSerialization;
+import com.wang.rpc.core.serialization.SerializationFactory;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -26,7 +34,6 @@ public class RpcDecoder extends ByteToMessageDecoder {
         // 1. 魔数
         short magic = in.readShort();
         if (RpcConstants.MAGIC != magic) {
-            // todo 说明是非我们需要处理的数据
             return;
         }
         // 2. 版本
@@ -35,6 +42,10 @@ public class RpcDecoder extends ByteToMessageDecoder {
         byte serialization = in.readByte();
         // 4. 类型
         byte type = in.readByte();
+        MessageTypeEnum typeEnum = MessageTypeEnum.findByType(type);
+        if (typeEnum == null) {
+            return;
+        }
         // 5. 状态
         byte status = in.readByte();
         // 6. 请求 ID
@@ -52,8 +63,41 @@ public class RpcDecoder extends ByteToMessageDecoder {
         byte[] data = new byte[dataLength];
         in.readBytes(data);
 
-        // 根据不同类型的消息，分别进行处理消息
-        // todo
+        // 将从流获取的数据组装成 protocal 形式的数据
+        MessageHeader header = new MessageHeader()
+                .setMagic(magic)
+                .setVersion(version)
+                .setSerialization(serialization)
+                .setType(type)
+                .setStatus(status)
+                .setRequestId((String) requestId)
+                .setMsgLen(dataLength)
+                ;
+
+        RpcSerialization rpcSerialization = SerializationFactory.getRpcSerialization(SerializationTypeEnum.parseByType(serialization));
+        switch (typeEnum) {
+            case REQUEST:
+                // 请求
+                TinyRpcRequest rpcRequest = rpcSerialization.deserialize(data, TinyRpcRequest.class);
+                if (rpcRequest != null) {
+                    MessageProtocol<TinyRpcRequest> protocol = new MessageProtocol<>();
+                    protocol.setHeader(header);
+                    protocol.setBody(rpcRequest);
+                    out.add(protocol);
+                }
+                break;
+            case RESPONSE:
+                // 响应
+                TinyRpcResponse rpcResponse = rpcSerialization.deserialize(data, TinyRpcResponse.class);
+                if (rpcResponse != null) {
+                    MessageProtocol<TinyRpcResponse> protocol = new MessageProtocol<>();
+                    protocol.setHeader(header);
+                    protocol.setBody(rpcResponse);
+                    out.add(protocol);
+                }
+                break;
+            default:
+        }
 
     }
 }

@@ -3,6 +3,7 @@ package com.wang.rpc.core.protocol;
 import com.wang.rpc.core.domain.enums.MessageStatusEnum;
 import com.wang.rpc.core.domain.enums.MessageTypeEnum;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serializable;
 
@@ -10,6 +11,7 @@ import java.io.Serializable;
  * @author wangjiabao
  */
 @Data
+@Accessors(chain = true)
 public class MessageHeader implements Serializable {
 
     /**

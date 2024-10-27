@@ -10,11 +10,7 @@ public enum SerializationTypeEnum {
     /**
      * hessian2
      */
-    HESSIAN((byte) 0),
-    /**
-     * json
-     */
-    JSON((byte) 1);
+    HESSIAN((byte) 0);
 
     private byte type;
 

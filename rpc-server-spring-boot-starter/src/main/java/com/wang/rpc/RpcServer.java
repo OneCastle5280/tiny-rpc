@@ -13,6 +13,8 @@ import org.springframework.boot.CommandLineRunner;
 
 import java.net.InetAddress;
 
+import static com.wang.rpc.cache.ServiceCache.SERVICE_CACHE;
+
 /**
  * 扫描 tinyRpcService && 启动服务
  *
@@ -43,9 +45,13 @@ public class RpcServer implements BeanPostProcessor, CommandLineRunner {
                 String serviceName = rpcService.interfaceClass().getName();
                 String version = rpcService.version();
 
+
+                String finalServiceName = serviceName + "-" + version;
+                SERVICE_CACHE.put(finalServiceName, bean);
+
                 RpcProvider rpcProvider = new RpcProvider();
                 rpcProvider.setAppName(this.serviceProperties.getAppName());
-                rpcProvider.setServiceName(serviceName + "-" + version);
+                rpcProvider.setServiceName(finalServiceName);
                 rpcProvider.setVersion(version);
                 rpcProvider.setAddress(InetAddress.getLocalHost().getHostAddress());
                 rpcProvider.setPort(this.serviceProperties.getPort());
@@ -67,7 +73,13 @@ public class RpcServer implements BeanPostProcessor, CommandLineRunner {
      */
     @Override
     public void run(String... args) throws Exception {
-        new Thread(() -> this.nettyTransport.start()).start();
-
+        new Thread(() -> this.nettyTransport.start(this.serviceProperties.getPort())).start();
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            try {
+                this.rpcRegister.destroy();
+            } catch (Exception e) {
+                log.error("destroy error", e);
+            }
+        }));
     }
 }

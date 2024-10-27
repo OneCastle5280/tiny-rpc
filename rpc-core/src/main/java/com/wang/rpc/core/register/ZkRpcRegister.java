@@ -74,4 +74,9 @@ public class ZkRpcRegister implements RpcRegister{
                 .build();
         this.serviceDiscovery.unregisterService(instance);
     }
+
+    @Override
+    public void destroy() throws Exception {
+        this.serviceDiscovery.close();
+    }
 }

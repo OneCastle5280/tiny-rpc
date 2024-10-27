@@ -26,4 +26,11 @@ public interface RpcRegister {
      * @throws Exception
      */
     void unRegister(RpcProvider provider) throws Exception;
+
+    /**
+     * 服务关闭
+     *
+     * @throws Exception
+     */
+    void destroy() throws Exception;
 }

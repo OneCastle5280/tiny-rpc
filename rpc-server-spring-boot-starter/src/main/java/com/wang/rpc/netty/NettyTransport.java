@@ -7,6 +7,7 @@ import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetAddress;
 
@@ -15,6 +16,7 @@ import java.net.InetAddress;
  *
  * @author wangjiabao
  */
+@Slf4j
 public class NettyTransport {
 
     public void start(int port) {
@@ -38,10 +40,14 @@ public class NettyTransport {
                     })
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
             ChannelFuture channelFuture = server.bind(serverAddress, port).sync();
+            log.info("tiny-rpc start on {}:{}", serverAddress, port);
+            // channel 关闭时同步释放字段
+            channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
-
+            log.error("tiny-rpc start error", e);
+        } finally {
+            boss.shutdownGracefully();
+            worker.shutdownGracefully();
         }
-
-
     }
 }
