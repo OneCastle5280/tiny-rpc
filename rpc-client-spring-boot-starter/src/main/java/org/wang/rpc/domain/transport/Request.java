@@ -13,6 +13,7 @@ import java.io.Serializable;
 @Data
 @Accessors(chain = true)
 public class Request implements Serializable {
+    private static final long serialVersionUID = -1L;
 
     /**
      * 调用具体信息

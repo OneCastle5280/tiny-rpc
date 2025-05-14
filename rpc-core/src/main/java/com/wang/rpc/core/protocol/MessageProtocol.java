@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 @Data
 public class MessageProtocol<T> implements Serializable {
-
+    private static final long serialVersionUID = -1L;
     /**
      * 消息头【固定长度】
      */
