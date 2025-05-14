@@ -17,7 +17,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 /**
- * @author 没有头发的二次元
+ * @author wangjiabao
  */
 public class RpcDecoder extends ByteToMessageDecoder {
 
