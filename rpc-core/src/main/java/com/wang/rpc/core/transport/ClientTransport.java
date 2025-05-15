@@ -2,29 +2,34 @@ package com.wang.rpc.core.transport;
 
 import com.wang.rpc.core.codecs.RpcDecoder;
 import com.wang.rpc.core.codecs.RpcEncoder;
+import com.wang.rpc.core.domain.pool.PooledChannel;
 import com.wang.rpc.core.domain.request.TinyRpcRequest;
 import com.wang.rpc.core.handler.RpcResponseHandler;
+import com.wang.rpc.core.pool.NettyChannelPool;
 import com.wang.rpc.core.protocol.MessageProtocol;
 import io.netty.bootstrap.Bootstrap;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 
+import java.net.SocketAddress;
+
 /**
  * 借助 netty 实现客户端与服务端的数据传输
  *
  * @author wangjiabao
  */
-public class ClientTransport implements Transport{
+public class ClientTransport<T> {
 
+    private NettyChannelPool nettyChannelPool;
     private final Bootstrap bootstrap;
-    private final EventLoopGroup eventLoopGroup;
 
     public ClientTransport() {
         this.bootstrap = new Bootstrap();
-        this.eventLoopGroup = new NioEventLoopGroup();
+        EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
 
         this.bootstrap.group(eventLoopGroup)
                 .channel(NioSocketChannel.class)
@@ -44,8 +49,43 @@ public class ClientTransport implements Transport{
                 });
     }
 
-    @Override
-    public void start(int port) {
 
+    /**
+     * start client transport
+     *
+     * @param socketAddress
+     * @throws Exception
+     */
+    public void start(SocketAddress socketAddress) throws Exception {
+        // TODO 10, 2 config dynamic
+        this.nettyChannelPool = new NettyChannelPool(this.bootstrap, socketAddress, 10, 2);
     }
+
+    /**
+     * send message to server
+     *
+     * @param messageProtocol
+     * @param flush
+     * @throws Exception
+     */
+    public void send(MessageProtocol<T> messageProtocol, boolean flush) throws Exception {
+        PooledChannel pooledChannel = this.nettyChannelPool.borrowChannel();
+        Channel channel = pooledChannel.getChannel();
+        if (flush) {
+            channel.writeAndFlush(messageProtocol);
+        } else {
+            channel.write(messageProtocol);
+        }
+    }
+
+    /**
+     * send message to server, default writeAndFlush()
+     *
+     * @param messageProtocol
+     * @throws Exception
+     */
+    public void send(MessageProtocol<T> messageProtocol) throws Exception {
+        this.send(messageProtocol, true);
+    }
+
 }
