@@ -4,6 +4,7 @@ import com.wang.rpc.core.domain.pool.PooledChannel;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.pool2.BasePooledObjectFactory;
 import org.apache.commons.pool2.DestroyMode;
 import org.apache.commons.pool2.PooledObject;
@@ -18,6 +19,7 @@ import java.net.SocketAddress;
  *
  * @author wangjiabao
  */
+@Slf4j
 public class NettyChannelPoolFactory extends BasePooledObjectFactory<PooledChannel> {
 
     private final Bootstrap bootstrap;
@@ -30,13 +32,21 @@ public class NettyChannelPoolFactory extends BasePooledObjectFactory<PooledChann
 
     @Override
     public PooledChannel create() throws Exception {
-        ChannelFuture channelFuture = this.bootstrap.connect(socketAddress).sync();
-        if (channelFuture.isSuccess()) {
-            // 创建链接成功
-            return new PooledChannel(channelFuture.channel(), socketAddress);
-        } else {
-            throw new ConnectException("connect error");
+        ChannelFuture channelFuture = null;
+        try {
+            channelFuture = this.bootstrap.connect(socketAddress).sync();
+            if (channelFuture.isSuccess()) {
+                // connect success
+                return new PooledChannel(channelFuture.channel(), socketAddress);
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            if (channelFuture != null) {
+                channelFuture.channel().eventLoop().shutdownGracefully();
+            }
         }
+        throw new ConnectException("connect exception");
     }
 
     @Override
