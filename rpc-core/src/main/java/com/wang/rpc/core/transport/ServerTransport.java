@@ -13,6 +13,9 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.netty.util.concurrent.Future;
+import io.netty.util.concurrent.GenericFutureListener;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.SocketAddress;
@@ -27,11 +30,14 @@ public class ServerTransport {
     private final ServerBootstrap serverBootstrap;
     private final NioEventLoopGroup bossGroup;
     private final NioEventLoopGroup workerGroup;
+    private final Integer port;
+    private ChannelFuture future;
 
-    public ServerTransport() {
+    public ServerTransport(int port) {
         // TODO 1,4 dynamic config
         this.bossGroup = new NioEventLoopGroup(1);
         this.workerGroup = new NioEventLoopGroup(4);
+        this.port = port;
 
         this.serverBootstrap = new ServerBootstrap();
         this.serverBootstrap
@@ -56,18 +62,35 @@ public class ServerTransport {
 
     /**
      * start server transport
-     *
-     * @param port
      */
-    public void start(int port) {
+    public void start() {
         try {
-            ChannelFuture future = this.serverBootstrap.bind(port).sync();
-            future.channel().closeFuture().sync();
+            future = this.serverBootstrap.bind(port).sync();
+            if (future.isSuccess()) {
+                log.info("server start on {}", port);
+            }
+            future.channel().closeFuture().addListener(f -> {
+                if (f.isSuccess()) {
+                    log.info("server close success");
+                }
+            }).sync();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } finally {
             this.bossGroup.shutdownGracefully();
             this.workerGroup.shutdownGracefully();
         }
+    }
+
+    public void close() {
+        if (future != null) {
+            future.channel().close();
+        }
+    }
+
+    public static void main(String[] args) {
+        ServerTransport transport = new ServerTransport(8099);
+        transport.start();
+        transport.close();
     }
 }

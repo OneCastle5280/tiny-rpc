@@ -26,8 +26,9 @@ public class ClientTransport<T> {
 
     private NettyChannelPool nettyChannelPool;
     private final Bootstrap bootstrap;
+    private SocketAddress socketAddress;
 
-    public ClientTransport() {
+    public ClientTransport(SocketAddress socketAddress) {
         this.bootstrap = new Bootstrap();
         EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
 
@@ -52,11 +53,8 @@ public class ClientTransport<T> {
 
     /**
      * start client transport
-     *
-     * @param socketAddress
-     * @throws Exception
      */
-    public void start(SocketAddress socketAddress) throws Exception {
+    public void start() {
         // TODO 10, 2 config dynamic
         this.nettyChannelPool = new NettyChannelPool(this.bootstrap, socketAddress, 10, 2);
     }
