@@ -18,11 +18,11 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import java.net.SocketAddress;
 
 /**
- * 借助 netty 实现客户端与服务端的数据传输
+ * client transport
  *
  * @author wangjiabao
  */
-public class ClientTransport<T> {
+public class ClientTransport implements Transport{
 
     private NettyChannelPool nettyChannelPool;
     private final Bootstrap bootstrap;
@@ -51,39 +51,15 @@ public class ClientTransport<T> {
     }
 
 
-    /**
-     * start client transport
-     */
-    public void start() {
-        // TODO 10, 2 config dynamic
-        this.nettyChannelPool = new NettyChannelPool(this.bootstrap, socketAddress, 10, 2);
+    @Override
+    public void start(boolean sync) {
+        // TODO 2、10 dynamic config
+        nettyChannelPool = new NettyChannelPool(bootstrap, socketAddress, 10, 2);
     }
 
-    /**
-     * send message to server
-     *
-     * @param messageProtocol
-     * @param flush
-     * @throws Exception
-     */
-    public void send(MessageProtocol<T> messageProtocol, boolean flush) throws Exception {
-        PooledChannel pooledChannel = this.nettyChannelPool.borrowChannel();
-        Channel channel = pooledChannel.getChannel();
-        if (flush) {
-            channel.writeAndFlush(messageProtocol);
-        } else {
-            channel.write(messageProtocol);
-        }
+    @Override
+    public void close(boolean sync) {
+        // close channel pool
+        this.nettyChannelPool.close();
     }
-
-    /**
-     * send message to server, default writeAndFlush()
-     *
-     * @param messageProtocol
-     * @throws Exception
-     */
-    public void send(MessageProtocol<T> messageProtocol) throws Exception {
-        this.send(messageProtocol, true);
-    }
-
 }

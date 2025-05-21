@@ -2,7 +2,6 @@ package com.wang.rpc.core.transport;
 
 import com.wang.rpc.core.codecs.RpcDecoder;
 import com.wang.rpc.core.codecs.RpcEncoder;
-import com.wang.rpc.core.domain.request.TinyRpcRequest;
 import com.wang.rpc.core.domain.response.TinyRpcResponse;
 import com.wang.rpc.core.handler.RpcRequestHandler;
 import com.wang.rpc.core.protocol.MessageProtocol;
@@ -13,19 +12,14 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import io.netty.util.concurrent.Future;
-import io.netty.util.concurrent.GenericFutureListener;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-
-import java.net.SocketAddress;
 
 
 /**
  * @author wangjiabao
  */
 @Slf4j
-public class ServerTransport {
+public class ServerTransport implements Transport{
 
     private final ServerBootstrap serverBootstrap;
     private final NioEventLoopGroup bossGroup;
@@ -63,34 +57,41 @@ public class ServerTransport {
     /**
      * start server transport
      */
-    public void start() {
-        try {
-            future = this.serverBootstrap.bind(port).sync();
-            if (future.isSuccess()) {
-                log.info("server start on {}", port);
-            }
-            future.channel().closeFuture().addListener(f -> {
-                if (f.isSuccess()) {
-                    log.info("server close success");
+    @Override
+    public void start(boolean sync) {
+        future = this.serverBootstrap.bind(this.port);
+        if (sync) {
+            // sync
+            try {
+                future = future.sync();
+                if (future.isSuccess()) {
+                    log.info("[ServerTransport] start success on {}", port);
                 }
-            }).sync();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        } finally {
-            this.bossGroup.shutdownGracefully();
-            this.workerGroup.shutdownGracefully();
+            } catch (InterruptedException e) {
+                log.error("[ServerTransport] InterruptedException when start server");
+                Thread.currentThread().interrupt();
+            }
         }
     }
 
-    public void close() {
-        if (future != null) {
-            future.channel().close();
+    /**
+     * close server transport
+     */
+    @Override
+    public void close(boolean sync) {
+        future = this.future.channel().close();
+        if (sync) {
+            try {
+                future = future.sync();
+                if (future.isSuccess()) {
+                    log.info("[ServerTransport] close success on {}", port);
+                }
+            } catch (InterruptedException e) {
+                log.error("[ServerTransport] InterruptedException when close server");
+                Thread.currentThread().interrupt();
+            }
         }
-    }
-
-    public static void main(String[] args) {
-        ServerTransport transport = new ServerTransport(8099);
-        transport.start();
-        transport.close();
+        this.workerGroup.shutdownGracefully();
+        this.bossGroup.shutdownGracefully();
     }
 }
