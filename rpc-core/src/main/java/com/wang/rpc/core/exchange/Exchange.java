@@ -1,4 +1,4 @@
-package com.wang.rpc.core.transport;
+package com.wang.rpc.core.exchange;
 
 import com.wang.rpc.core.Client;
 import com.wang.rpc.core.Server;
@@ -8,7 +8,7 @@ import java.net.SocketAddress;
 /**
  * @author wangjiabao
  */
-public interface Transport {
+public interface Exchange{
 
     /**
      * bind a server

@@ -40,11 +40,11 @@ public class NettyTransport {
                     })
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
             ChannelFuture channelFuture = server.bind(serverAddress, port).sync();
-            log.info("tiny-rpc start on {}:{}", serverAddress, port);
+            log.info("tiny-rpc bind on {}:{}", serverAddress, port);
             // channel 关闭时同步释放字段
             channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
-            log.error("tiny-rpc start error", e);
+            log.error("tiny-rpc bind error", e);
         } finally {
             boss.shutdownGracefully();
             worker.shutdownGracefully();

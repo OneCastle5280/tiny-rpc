@@ -1,14 +1,13 @@
-package com.wang.rpc.core.transport;
+package com.wang.rpc.core.transport.netty;
 
 import com.wang.rpc.core.codecs.RpcDecoder;
 import com.wang.rpc.core.codecs.RpcEncoder;
-import com.wang.rpc.core.domain.pool.PooledChannel;
 import com.wang.rpc.core.domain.request.TinyRpcRequest;
 import com.wang.rpc.core.handler.RpcResponseHandler;
 import com.wang.rpc.core.pool.NettyChannelPool;
 import com.wang.rpc.core.protocol.MessageProtocol;
+import com.wang.rpc.core.Client;
 import io.netty.bootstrap.Bootstrap;
-import io.netty.channel.Channel;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
@@ -18,17 +17,15 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import java.net.SocketAddress;
 
 /**
- * client transport
- *
  * @author wangjiabao
  */
-public class ClientTransport implements Transport{
+public class NettyClient implements Client {
 
     private NettyChannelPool nettyChannelPool;
     private final Bootstrap bootstrap;
     private SocketAddress socketAddress;
 
-    public ClientTransport(SocketAddress socketAddress) {
+    public NettyClient(SocketAddress socketAddress) {
         this.bootstrap = new Bootstrap();
         EventLoopGroup eventLoopGroup = new NioEventLoopGroup();
 
@@ -50,16 +47,8 @@ public class ClientTransport implements Transport{
                 });
     }
 
-
-    @Override
-    public void start(boolean sync) {
-        // TODO 2、10 dynamic config
-        nettyChannelPool = new NettyChannelPool(bootstrap, socketAddress, 10, 2);
+    public NettyClient connect() {
+        return this;
     }
 
-    @Override
-    public void close(boolean sync) {
-        // close channel pool
-        this.nettyChannelPool.close();
-    }
 }
