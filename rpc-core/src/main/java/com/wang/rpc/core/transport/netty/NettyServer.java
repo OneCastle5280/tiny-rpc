@@ -6,6 +6,7 @@ import com.wang.rpc.core.domain.response.TinyRpcResponse;
 import com.wang.rpc.core.handler.RpcRequestHandler;
 import com.wang.rpc.core.protocol.MessageProtocol;
 import com.wang.rpc.core.Server;
+import com.wang.rpc.core.transport.netty.codec.CodecHolder;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -42,6 +43,9 @@ public class NettyServer implements Server {
         this.workerGroup = new NioEventLoopGroup(DEFAULT_WORKER_GROUP_THREAD_NUM);
         this.port = port;
 
+        // TODO codec SPI
+        CodecHolder codecHolder = new CodecHolder(null);
+
         this.serverBootstrap = new ServerBootstrap();
         this.serverBootstrap
                 .group(bossGroup, workerGroup)
@@ -50,12 +54,8 @@ public class NettyServer implements Server {
                     @Override
                     protected void initChannel(SocketChannel ch) throws Exception {
                         ch.pipeline()
-                                /*
-                                  1. 入站：解码，将 字节流 转化成 POJO
-                                  2. 出战：编码，将 POJO 转化成 字节流
-                                 */
-                                .addLast(new RpcDecoder())
-                                .addLast(new RpcRequestHandler())
+                                .addLast(codecHolder.getDecoder())
+                                .addLast(codecHolder.getEncoder())
                                 .addLast(new RpcEncoder<MessageProtocol<TinyRpcResponse>>());
 
                     }

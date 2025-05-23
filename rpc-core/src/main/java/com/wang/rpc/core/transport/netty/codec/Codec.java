@@ -5,7 +5,7 @@ import io.netty.buffer.ByteBuf;
 /**
  * @author wangjiabao
  */
-public interface NettyCodec {
+public interface Codec {
 
     ByteBuf encode(Object obj);
 
