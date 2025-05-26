@@ -4,7 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
 import io.netty.handler.codec.MessageToByteEncoder;
-import lombok.Data;
+import com.wang.rpc.core.codec.Codec;
 
 import java.util.List;
 
@@ -32,7 +32,8 @@ public class CodecHolder {
 
         @Override
         protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-            // TODO
+            int readableBytes = in.readableBytes();
+            Object decode = codec.decode(ctx, in);
         }
     }
 
