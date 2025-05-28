@@ -15,9 +15,9 @@ import java.util.List;
  */
 public class CodecHolder {
 
-    private Decoder decoder;
-    private Encoder encoder;
-    private Codec codec;
+    private final Decoder decoder;
+    private final Encoder encoder;
+    private final Codec codec;
 
     public CodecHolder(Codec codec) {
         this.decoder = new Decoder();
@@ -32,8 +32,7 @@ public class CodecHolder {
 
         @Override
         protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) throws Exception {
-            int readableBytes = in.readableBytes();
-            Object decode = codec.decode(ctx, in);
+            out.add(codec.decode(ctx, in));
         }
     }
 
@@ -44,7 +43,8 @@ public class CodecHolder {
 
         @Override
         protected void encode(ChannelHandlerContext ctx, Object msg, ByteBuf out) throws Exception {
-            // TODO
+            ByteBuf encode = codec.encode(msg);
+            out.writeBytes(encode);
         }
     }
 

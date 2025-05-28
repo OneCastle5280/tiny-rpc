@@ -1,6 +1,5 @@
-package com.wang.rpc.core.serialization;
+package com.wang.rpc.core.serialize;
 
-import com.caucho.hessian.io.HessianInput;
 import com.caucho.hessian.io.HessianSerializerInput;
 import com.caucho.hessian.io.HessianSerializerOutput;
 
@@ -8,7 +7,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
-public class Hessian2 implements RpcSerialization{
+public class Hessian2 implements Serialize {
 
     @Override
     public <T> byte[] serialize(T obj) throws IOException {

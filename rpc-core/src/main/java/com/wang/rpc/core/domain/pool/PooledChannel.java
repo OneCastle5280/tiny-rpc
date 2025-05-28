@@ -17,7 +17,7 @@ import java.net.SocketAddress;
 @AllArgsConstructor
 public class PooledChannel {
     /**
-     * netty channel
+     * netty TinyChannel
      */
     private Channel channel;
     /**

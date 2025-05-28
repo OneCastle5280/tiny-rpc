@@ -41,7 +41,7 @@ public class NettyTransport {
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
             ChannelFuture channelFuture = server.bind(serverAddress, port).sync();
             log.info("tiny-rpc bind on {}:{}", serverAddress, port);
-            // channel 关闭时同步释放字段
+            // TinyChannel 关闭时同步释放字段
             channelFuture.channel().closeFuture().sync();
         } catch (Exception e) {
             log.error("tiny-rpc bind error", e);

@@ -10,9 +10,9 @@ public interface Codec {
     ByteBuf encode(Object obj);
 
     /**
-     * decode channel readable bytes
+     * decode TinyChannel readable bytes
      *
-     * @param ctx channel ctx
+     * @param ctx TinyChannel ctx
      * @param in
      * @return {@link DecodeResult} or object
      */

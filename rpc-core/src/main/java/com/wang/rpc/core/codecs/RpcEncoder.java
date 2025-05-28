@@ -3,8 +3,8 @@ package com.wang.rpc.core.codecs;
 import com.wang.rpc.core.domain.enums.SerializationTypeEnum;
 import com.wang.rpc.core.protocol.MessageHeader;
 import com.wang.rpc.core.protocol.MessageProtocol;
-import com.wang.rpc.core.serialization.RpcSerialization;
-import com.wang.rpc.core.serialization.SerializationFactory;
+import com.wang.rpc.core.serialize.Serialize;
+import com.wang.rpc.core.serialize.SerializeSupport;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
@@ -35,7 +35,7 @@ public class RpcEncoder<T> extends MessageToByteEncoder<MessageProtocol<T>> {
         byteBuf.writeCharSequence(header.getRequestId(), StandardCharsets.UTF_8);
 
         // 选择序列化类型进行序列化
-        RpcSerialization serialization = SerializationFactory.getRpcSerialization(SerializationTypeEnum.parseByType(header.getSerialization()));
+        Serialize serialization = SerializeSupport.getRpcSerialization(SerializationTypeEnum.parseByType(header.getSerialization()));
         byte[] data = serialization.serialize(messageProtocol.getBody());
 
         // 消息体长度

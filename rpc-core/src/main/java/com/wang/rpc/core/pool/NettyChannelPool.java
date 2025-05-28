@@ -15,12 +15,12 @@ public class NettyChannelPool {
     private final GenericObjectPool<PooledChannel> objectPool;
 
     /**
-     * init netty channel pool
+     * init netty TinyChannel pool
      *
      * @param bootstrap      netty bootstrap
      * @param socketAddress  socket address
-     * @param maxTotal       max channel size
-     * @param minIdle        min idle channel size
+     * @param maxTotal       max TinyChannel size
+     * @param minIdle        min idle TinyChannel size
      */
     public NettyChannelPool(Bootstrap bootstrap, SocketAddress socketAddress, int maxTotal, int minIdle) {
         GenericObjectPoolConfig<PooledChannel> config = new GenericObjectPoolConfig<>();

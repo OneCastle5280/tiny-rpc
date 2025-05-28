@@ -2,8 +2,8 @@ package com.wang.rpc.handler;
 
 import com.wang.rpc.core.domain.enums.MessageStatusEnum;
 import com.wang.rpc.core.domain.enums.MessageTypeEnum;
-import com.wang.rpc.core.domain.request.TinyRpcRequest;
-import com.wang.rpc.core.domain.response.TinyRpcResponse;
+import com.wang.rpc.core.exchange.domain.TinyRpcRequest;
+import com.wang.rpc.core.exchange.domain.TinyRpcResponse;
 import com.wang.rpc.core.protocol.MessageHeader;
 import com.wang.rpc.core.protocol.MessageProtocol;
 import io.netty.channel.ChannelHandlerContext;

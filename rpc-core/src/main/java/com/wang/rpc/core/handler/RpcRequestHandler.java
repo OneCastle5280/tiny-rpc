@@ -1,6 +1,6 @@
 package com.wang.rpc.core.handler;
 
-import com.wang.rpc.core.domain.request.TinyRpcRequest;
+import com.wang.rpc.core.exchange.domain.TinyRpcRequest;
 import com.wang.rpc.core.protocol.MessageProtocol;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;

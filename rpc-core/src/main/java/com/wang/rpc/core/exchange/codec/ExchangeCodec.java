@@ -1,9 +1,14 @@
-package com.wang.rpc.core.exchange;
+package com.wang.rpc.core.exchange.codec;
 
 import com.wang.rpc.core.codec.Codec;
 import com.wang.rpc.core.domain.enums.ReadableEventTypeEnum;
+import com.wang.rpc.core.exchange.domain.TinyRequest;
+import com.wang.rpc.core.exchange.domain.TinyResponse;
+import com.wang.rpc.core.serialize.SerializeSupport;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
+
+import java.util.function.Supplier;
 
 import static com.wang.rpc.core.codec.Codec.DecodeResult.NEED_MORE_INPUT;
 import static com.wang.rpc.core.codec.Codec.DecodeResult.UNKNOWN_MSG;
@@ -56,7 +61,7 @@ public class ExchangeCodec implements Codec {
         // msg status
         byte status = in.readByte();
         // request id
-        long reqId = in.readLong();
+        long id = in.readLong();
         // data Length
         int dataLength = in.readInt();
         if (readableBytes < HEADER_LENGTH + dataLength) {
@@ -69,11 +74,40 @@ public class ExchangeCodec implements Codec {
         byte eventType = ReadableEventTypeEnum.findByType(type);
         if (eventType == ReadableEventTypeEnum.REQUEST.getType()) {
             // decode request
-
+            TinyRequest request = doDecode(in, dataLength, serializeType, TinyRequest.class, TinyRequest::new);
+            // TODO NPE
+            request.setId(id);
+            return request;
         } else if (eventType == ReadableEventTypeEnum.RESPONSE.getType()) {
             // decode response
+            TinyResponse response = doDecode(in, dataLength, serializeType, TinyResponse.class, TinyResponse::new);
+            // TODO NPE
+            response.setId(id);
+            response.setStatus(status);
+            return response;
         }
 
+        return UNKNOWN_MSG;
+    }
+
+
+    private <T> T doDecode(ByteBuf in, int dataLength, byte serializeType, Class<T> targetClass, Supplier<T> instance) {
+        if (dataLength == 0) {
+            // TODO
+            return instance.get();
+        }
+
+        // read data bytes
+        byte[] dataBytes = new byte[dataLength];
+        in.readBytes(dataBytes);
+
+        // deserialize
+        try {
+            return SerializeSupport.deserialize(dataBytes, serializeType, targetClass);
+        } catch (Exception e) {
+            // TODO exception
+        }
+        // TODO
         return null;
     }
 }

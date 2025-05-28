@@ -1,4 +1,4 @@
-package com.wang.rpc.core.domain.request;
+package com.wang.rpc.core.exchange.domain;
 
 import lombok.Data;
 import lombok.experimental.Accessors;

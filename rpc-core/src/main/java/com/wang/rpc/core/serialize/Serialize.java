@@ -1,13 +1,15 @@
-package com.wang.rpc.core.serialization;
+package com.wang.rpc.core.serialize;
 
 import java.io.IOException;
 
 /**
+ * TODO SPI
+ *
  * @author wangjiabao
  */
-public interface RpcSerialization {
+public interface Serialize {
     /**
-     * 序列化
+     * serialize
      *
      * @param obj
      * @param <T>
@@ -17,7 +19,7 @@ public interface RpcSerialization {
     <T> byte[] serialize(T obj) throws IOException;
 
     /**
-     * 反序列化
+     * deserialize
      *
      * @param data
      * @param clz

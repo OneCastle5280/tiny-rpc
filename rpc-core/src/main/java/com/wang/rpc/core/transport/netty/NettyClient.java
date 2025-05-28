@@ -2,7 +2,7 @@ package com.wang.rpc.core.transport.netty;
 
 import com.wang.rpc.core.codecs.RpcDecoder;
 import com.wang.rpc.core.codecs.RpcEncoder;
-import com.wang.rpc.core.domain.request.TinyRpcRequest;
+import com.wang.rpc.core.exchange.domain.TinyRpcRequest;
 import com.wang.rpc.core.handler.RpcResponseHandler;
 import com.wang.rpc.core.pool.NettyChannelPool;
 import com.wang.rpc.core.protocol.MessageProtocol;

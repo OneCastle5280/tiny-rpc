@@ -1,10 +1,11 @@
 package com.wang.rpc.core.transport.netty;
 
 import com.wang.rpc.core.codecs.RpcEncoder;
-import com.wang.rpc.core.domain.response.TinyRpcResponse;
+import com.wang.rpc.core.exchange.domain.TinyRpcResponse;
 import com.wang.rpc.core.protocol.MessageProtocol;
 import com.wang.rpc.core.Server;
 import com.wang.rpc.core.transport.netty.codec.CodecHolder;
+import com.wang.rpc.core.transport.netty.handler.NettyHandler;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelInitializer;
@@ -54,7 +55,7 @@ public class NettyServer implements Server {
                         ch.pipeline()
                                 .addLast(codecHolder.getDecoder())
                                 .addLast(codecHolder.getEncoder())
-                                .addLast(new RpcEncoder<MessageProtocol<TinyRpcResponse>>());
+                                .addLast(new NettyHandler());
 
                     }
                 })

@@ -15,7 +15,7 @@ import java.net.SocketAddress;
 
 
 /**
- * netty channel pool factory
+ * netty TinyChannel pool factory
  *
  * @author wangjiabao
  */

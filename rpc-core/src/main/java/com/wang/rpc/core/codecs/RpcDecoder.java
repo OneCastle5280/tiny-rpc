@@ -3,12 +3,12 @@ package com.wang.rpc.core.codecs;
 import com.wang.rpc.core.constants.RpcConstants;
 import com.wang.rpc.core.domain.enums.MessageTypeEnum;
 import com.wang.rpc.core.domain.enums.SerializationTypeEnum;
-import com.wang.rpc.core.domain.request.TinyRpcRequest;
-import com.wang.rpc.core.domain.response.TinyRpcResponse;
+import com.wang.rpc.core.exchange.domain.TinyRpcRequest;
+import com.wang.rpc.core.exchange.domain.TinyRpcResponse;
 import com.wang.rpc.core.protocol.MessageHeader;
 import com.wang.rpc.core.protocol.MessageProtocol;
-import com.wang.rpc.core.serialization.RpcSerialization;
-import com.wang.rpc.core.serialization.SerializationFactory;
+import com.wang.rpc.core.serialize.Serialize;
+import com.wang.rpc.core.serialize.SerializeSupport;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
@@ -74,11 +74,11 @@ public class RpcDecoder extends ByteToMessageDecoder {
                 .setMsgLen(dataLength)
                 ;
 
-        RpcSerialization rpcSerialization = SerializationFactory.getRpcSerialization(SerializationTypeEnum.parseByType(serialization));
+        Serialize serialize = SerializeSupport.getRpcSerialization(SerializationTypeEnum.parseByType(serialization));
         switch (typeEnum) {
             case REQUEST:
                 // 请求
-                TinyRpcRequest rpcRequest = rpcSerialization.deserialize(data, TinyRpcRequest.class);
+                TinyRpcRequest rpcRequest = serialize.deserialize(data, TinyRpcRequest.class);
                 if (rpcRequest != null) {
                     MessageProtocol<TinyRpcRequest> protocol = new MessageProtocol<>();
                     protocol.setHeader(header);
@@ -88,7 +88,7 @@ public class RpcDecoder extends ByteToMessageDecoder {
                 break;
             case RESPONSE:
                 // 响应
-                TinyRpcResponse rpcResponse = rpcSerialization.deserialize(data, TinyRpcResponse.class);
+                TinyRpcResponse rpcResponse = serialize.deserialize(data, TinyRpcResponse.class);
                 if (rpcResponse != null) {
                     MessageProtocol<TinyRpcResponse> protocol = new MessageProtocol<>();
                     protocol.setHeader(header);
