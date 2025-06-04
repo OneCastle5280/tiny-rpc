@@ -10,11 +10,6 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class TinyRequest {
     public TinyRequest() {
-
-    }
-
-    public TinyRequest(Long id) {
-        this.id = id;
     }
 
     /**

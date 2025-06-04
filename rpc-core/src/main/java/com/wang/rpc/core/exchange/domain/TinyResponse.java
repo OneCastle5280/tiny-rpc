@@ -9,6 +9,15 @@ import lombok.experimental.Accessors;
 @Data
 @Accessors(chain = true)
 public class TinyResponse {
+    public static final Byte OK = 10;
+    public static final Byte ERROR = 30;
+
+    public TinyResponse(){}
+
+    public TinyResponse(Long id) {
+        this.id = id;
+    }
+
     /**
      * request id
      */
@@ -23,4 +32,9 @@ public class TinyResponse {
      * result
      */
     private Object result;
+
+    /**
+     * err msg
+     */
+    private String errMsg;
 }
