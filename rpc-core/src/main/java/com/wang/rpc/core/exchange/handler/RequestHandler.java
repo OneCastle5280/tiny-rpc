@@ -1,6 +1,13 @@
 package com.wang.rpc.core.exchange.handler;
 
+import com.wang.rpc.core.exception.RpcServiceNotFound;
+import com.wang.rpc.core.exchange.domain.HandleResult;
 import com.wang.rpc.core.exchange.domain.TinyRequest;
+import com.wang.rpc.core.exchange.domain.TinyResponse;
+import com.wang.rpc.core.exchange.service.RpcService;
+import com.wang.rpc.core.exchange.service.RpcServiceFactory;
+import com.wang.rpc.core.utils.ThrowableUtil;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.concurrent.*;
@@ -12,6 +19,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  *
  * @author wangjiabao
  */
+@Slf4j
 public class RequestHandler {
 
     /**
@@ -54,9 +62,20 @@ public class RequestHandler {
     }
 
     private Object doHandleRequest(TinyRequest request) {
-        // TODO filter && handle
-        // find request handler
-        return null;
+        // TODO filter chain
+        HandleResult result = new HandleResult();
+        try {
+            RpcService rpcService = RpcServiceFactory.getRpcService(request);
+            result = rpcService.handleRequest(request);
+        } catch (RpcServiceNotFound e) {
+            log.error("[RequestHandler] doHandleRequest err", e);
+            result.setException(e);
+            result.setErrMessage(ThrowableUtil.toString(e));
+        } catch (Exception e) {
+            result.setException(e);
+            result.setErrMessage(ThrowableUtil.toString(e));
+        }
+        return result;
     }
 
 
