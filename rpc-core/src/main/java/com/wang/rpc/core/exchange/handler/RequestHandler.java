@@ -1,11 +1,11 @@
 package com.wang.rpc.core.exchange.handler;
 
 import com.wang.rpc.core.exception.RpcServiceNotFound;
-import com.wang.rpc.core.exchange.domain.HandleResult;
+import com.wang.rpc.core.exchange.domain.InvokeResult;
 import com.wang.rpc.core.exchange.domain.TinyRequest;
-import com.wang.rpc.core.exchange.domain.TinyResponse;
+import com.wang.rpc.core.exchange.invoker.InvokerFactory;
+import com.wang.rpc.core.exchange.invoker.InvokerWrapper;
 import com.wang.rpc.core.exchange.service.RpcService;
-import com.wang.rpc.core.exchange.service.RpcServiceFactory;
 import com.wang.rpc.core.utils.ThrowableUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -50,6 +50,12 @@ public class RequestHandler {
         );
     }
 
+    /**
+     * async handle request
+     *
+     * @param request  tiny request
+     * @return
+     */
     public CompletableFuture<Object> handleRequest(TinyRequest request) {
         if (request == null) {
             throw new NullPointerException();
@@ -62,11 +68,10 @@ public class RequestHandler {
     }
 
     private Object doHandleRequest(TinyRequest request) {
-        // TODO filter chain
-        HandleResult result = new HandleResult();
+        InvokeResult result = new InvokeResult();
         try {
-            RpcService rpcService = RpcServiceFactory.getRpcService(request);
-            result = rpcService.handleRequest(request);
+            InvokerWrapper invokerWrapper = InvokerFactory.getInvoker(request.getServiceName(), request.getMethodName(), request.getVersion());
+            // invoke
         } catch (RpcServiceNotFound e) {
             log.error("[RequestHandler] doHandleRequest err", e);
             result.setException(e);
