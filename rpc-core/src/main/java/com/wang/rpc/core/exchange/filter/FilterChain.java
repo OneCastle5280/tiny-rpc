@@ -51,16 +51,16 @@ public class FilterChain {
             return invoker;
         }
 
-        Invoker nextInvokder = invoker;
+        Invoker nextInvoker = invoker;
 
         // filter1 -> filter2 - > filter3 - > invoker
         for (int i = filters.size() - 1; i >= 0; i--) {
             Filter filter = filters.get(i);
 
-            final Invoker finalNextInvoker = nextInvokder;
+            final Invoker finalNextInvoker = nextInvoker;
 
             // wrap filter to invoker
-            nextInvokder = new Invoker() {
+            nextInvoker = new Invoker() {
                 @Override
                 public InvokeResult invoke(Invocation invocation) {
                     return filter.invoke(finalNextInvoker, invocation);
@@ -69,7 +69,7 @@ public class FilterChain {
         }
 
         HAD_BUILD_FILTER_CHAIN.add(invoker);
-        return nextInvokder;
+        return nextInvoker;
     }
     
 }
