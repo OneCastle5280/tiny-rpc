@@ -3,6 +3,7 @@ package com.wang.rpc.core.exchange.handler;
 import com.wang.rpc.core.channel.TinyChannel;
 import com.wang.rpc.core.exchange.domain.TinyRequest;
 import com.wang.rpc.core.exchange.domain.TinyResponse;
+import com.wang.rpc.core.exchange.future.TinyFuture;
 import com.wang.rpc.core.utils.ThrowableUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -26,6 +27,7 @@ public class ExchangeHandler {
             handleRequest(channel, (TinyRequest) msg);
         } else if (msg instanceof TinyResponse) {
             // response
+
         }
     }
 
@@ -40,7 +42,7 @@ public class ExchangeHandler {
 
         // async handle request
         try {
-            CompletableFuture<Object> cf = this.requestHandler.handleRequest(request);
+            TinyFuture cf = this.requestHandler.handleRequest(request);
             cf.whenComplete((handleResult, throwable) -> {
                 if (throwable == null) {
                     // success

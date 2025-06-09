@@ -10,13 +10,19 @@ import com.wang.rpc.core.exchange.filter.FilterChain;
  */
 public class InvokerWrapper {
 
-    private Invoker invoker;
+    private final Invoker invoker;
 
     public InvokerWrapper(Invoker invoker) {
         // build filter chain
         this.invoker = FilterChain.buildFilterChain(invoker);
     }
 
+    /**
+     * Return a proxy invoker if contains filters
+     * @see com.wang.rpc.core.exchange.filter.Filter
+     *
+     * @return
+     */
     public Invoker getInvoker() {
         return this.invoker;
     }

@@ -36,7 +36,7 @@ public class FilterChain {
 
 
     /**
-     * build filter chain for invoker:
+     * build filter chain for invoker
      *
      * @param invoker
      * @return
@@ -53,7 +53,7 @@ public class FilterChain {
 
         Invoker nextInvoker = invoker;
 
-        // filter1 -> filter2 - > filter3 - > invoker
+        // build filter chain, filter1 -> filter2 - > filter3 - > invoker
         for (int i = filters.size() - 1; i >= 0; i--) {
             Filter filter = filters.get(i);
 

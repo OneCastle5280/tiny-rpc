@@ -16,7 +16,6 @@ public class ThrowableUtil {
         msg.append("Exception Type: ").append(throwable.getClass().getName()).append("\n");
         msg.append("Exception Message: ").append(throwable.getMessage()).append("\n");
 
-        // 添加堆栈跟踪
         for (StackTraceElement element : throwable.getStackTrace()) {
             msg.append("\tat ").append(element.toString()).append("\n");
         }

@@ -1,5 +1,7 @@
 package com.wang.rpc.core.exchange.invoker;
 
+import com.wang.rpc.core.exception.InvokerNotFound;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -47,7 +49,17 @@ public class InvokerFactory {
         return serviceName + CONNECTOR + methodName + CONNECTOR + version;
     }
 
-    public static InvokerWrapper getInvoker(String serviceName, String methodName, String version) {
-        return INVOKER_MAP.get(invokerUniqueKey(serviceName, methodName, version));
+    /**
+     * get invoker with cache
+     *
+     * @throws InvokerNotFound if invoker is not found, will throw InvokerNotFound Exception
+     */
+    public static Invoker getInvoker(String serviceName, String methodName, String version) throws InvokerNotFound {
+        String uniqueKey = invokerUniqueKey(serviceName, methodName, version);
+        InvokerWrapper wrapper = INVOKER_MAP.get(uniqueKey);
+        if (wrapper == null) {
+            throw new InvokerNotFound( uniqueKey + "invoker is not found");
+        }
+        return wrapper.getInvoker();
     }
 }
