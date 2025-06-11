@@ -17,8 +17,11 @@ public class ExchangeHandler {
 
     private final RequestHandler requestHandler;
 
+    private final ResponseHandler responseHandler;
+
     public ExchangeHandler() {
         this.requestHandler = new RequestHandler();
+        this.responseHandler = new ResponseHandler();
     }
 
     public void receive(TinyChannel channel, Object msg) {
@@ -27,15 +30,19 @@ public class ExchangeHandler {
             handleRequest(channel, (TinyRequest) msg);
         } else if (msg instanceof TinyResponse) {
             // response
-
+            handleResponse(channel, (TinyResponse) msg);
         }
     }
 
     /**
+     * handle response
+     */
+    private void handleResponse(TinyChannel channel, TinyResponse response) {
+        this.responseHandler.handleResponse(response);
+    }
+
+    /**
      * async handle request
-     *
-     * @param channel
-     * @param request
      */
     private void handleRequest(TinyChannel channel, TinyRequest request) {
         TinyResponse response = new TinyResponse(request.getId());
