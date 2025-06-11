@@ -42,8 +42,7 @@ public class ExchangeHandler {
 
         // async handle request
         try {
-            TinyFuture cf = this.requestHandler.handleRequest(request);
-            cf.whenComplete((handleResult, throwable) -> {
+            this.requestHandler.handleRequest(request).whenComplete((handleResult, throwable) -> {
                 if (throwable == null) {
                     // success
                     response.setStatus(TinyResponse.OK);
@@ -60,6 +59,9 @@ public class ExchangeHandler {
             response.setStatus(TinyResponse.ERROR);
             response.setErrMsg(ThrowableUtil.toString(e));
             reply(channel, response);
+        } finally {
+            // remove TinyFuture
+            TinyFuture.removeTinyFuture(String.valueOf(request.getId()));
         }
     }
 

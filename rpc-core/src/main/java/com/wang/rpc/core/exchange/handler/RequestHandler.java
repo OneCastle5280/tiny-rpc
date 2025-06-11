@@ -5,14 +5,12 @@ import com.wang.rpc.core.exchange.domain.Invocation;
 import com.wang.rpc.core.exchange.domain.InvokeResult;
 import com.wang.rpc.core.exchange.domain.TinyRequest;
 import com.wang.rpc.core.exchange.future.TinyFuture;
-import com.wang.rpc.core.exchange.invoker.Invoker;
 import com.wang.rpc.core.exchange.invoker.InvokerFactory;
 import com.wang.rpc.core.utils.ThrowableUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.concurrent.*;
-import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  *
@@ -42,13 +40,8 @@ public class RequestHandler {
             throw new NullPointerException();
         }
 
-        return TinyFuture.addTinyFuture(String.valueOf(request.getId()), )
-
-        return FUTURE_MAP.putIfAbsent(
-                String.valueOf(request.getId()),
-                // async handle request
-                CompletableFuture.supplyAsync(() -> this.doHandleRequest(request), this.threadPool)
-        );
+        // async handle request
+        return TinyFuture.addTinyFuture(String.valueOf(request.getId()), () -> doHandleRequest(request));
     }
 
     /**

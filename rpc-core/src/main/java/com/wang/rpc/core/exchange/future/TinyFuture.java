@@ -3,14 +3,13 @@ package com.wang.rpc.core.exchange.future;
 import java.util.Map;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Supplier;
 
 /**
  * tiny future
  *
  * @author wangjiabao
  */
-public class TinyFuture extends CompletableFuture<Object> {
+public class TinyFuture implements Future<Object> {
 
     /**
      * requestId —> tinyFuture
@@ -38,21 +37,81 @@ public class TinyFuture extends CompletableFuture<Object> {
                     return new Thread(r, threadName);
                 }
         );
-
     }
 
-    public TinyFuture() {
-        super();
+    private final TinyTask task;
+
+    public TinyFuture(TinyTask task) {
+        this.task = task;
     }
 
-    public TinyFuture(Supplier<?> supplier) {
+    /**
+     * add {@code TinyFuture} to threadPool
+     *
+     * @param requestId  Request unique identifier
+     * @param callable   task
+     * @return
+     */
+    public static TinyFuture addTinyFuture(String requestId, Callable<Object> callable) {
+        // new task and future
+        TinyTask task = new TinyTask(callable);
+        TinyFuture tinyFuture = new TinyFuture(task);
 
+        // submit task
+        THREAD_POOL.submit(task);
+
+        // put future to map
+        FUTURE_MAP.putIfAbsent(requestId, tinyFuture);
+        return tinyFuture;
+    }
+
+    /**
+     *  remove {@code TinyFuture}
+     *
+     * @param requestId Request unique identifier
+     */
+    public static void removeTinyFuture(String requestId) {
+        FUTURE_MAP.remove(requestId);
     }
 
 
-    public static TinyFuture addTinyFuture(String requestId, TinyFuture future) {
-        return FUTURE_MAP.putIfAbsent(requestId, future);
+    /**
+     * when task complete will consumer
+     *
+     * @param consumer
+     */
+    public void whenComplete(Consumer<Object, Throwable> consumer) {
+        // add listener
+        this.task.addListener(new TinyTaskListener() {
+            @Override
+            public void runWhenComplete(Object result, Throwable throwable) {
+                consumer.accept(result, throwable);
+            }
+        });
     }
 
+    @Override
+    public boolean cancel(boolean mayInterruptIfRunning) {
+        return task.cancel(mayInterruptIfRunning);
+    }
 
+    @Override
+    public boolean isCancelled() {
+        return task.isCancelled();
+    }
+
+    @Override
+    public boolean isDone() {
+        return task.isDone();
+    }
+
+    @Override
+    public Object get() throws InterruptedException, ExecutionException {
+        return task.get();
+    }
+
+    @Override
+    public Object get(long timeout, TimeUnit unit) throws InterruptedException, ExecutionException, TimeoutException {
+        return task.get(timeout, unit);
+    }
 }
