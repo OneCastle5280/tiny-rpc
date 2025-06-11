@@ -9,10 +9,7 @@ package com.wang.rpc.core.exchange.future;
 @FunctionalInterface
 public interface Consumer<T, U> {
     /**
-     * consumer accept
-     *
-     * @param t
-     * @param u
+     * accept
      */
     void accept(T t, U u);
 }
