@@ -45,23 +45,33 @@ public class TinyFuture implements Future<Object> {
         this.task = task;
     }
 
+    public TinyFuture(Callable<Object> callable) {
+        this.task = new TinyTask(callable);
+    }
+
     /**
-     * add {@code TinyFuture} to threadPool
+     * add callable task to FutureMap
      *
-     * @param requestId  Request unique identifier
-     * @param callable   task
+     * @param requestId     FutureMap key
+     * @param callable      callable task
      * @return
      */
-    public static TinyFuture addTinyFuture(String requestId, Callable<Object> callable) {
-        // new task and future
-        TinyTask task = new TinyTask(callable);
-        TinyFuture tinyFuture = new TinyFuture(task);
+    public static TinyFuture addToFutureMap(String requestId, Callable<Object> callable) {
+        return FUTURE_MAP.putIfAbsent(requestId, new TinyFuture(callable));
+    }
+
+    /**
+     * supply async callable task
+     *
+     * @param callable
+     * @return
+     */
+    public static TinyFuture supplyAsync(Callable<Object> callable) {
+        // new TinyFuture
+        TinyFuture tinyFuture = new TinyFuture(new TinyTask(callable));
 
         // submit task
-        THREAD_POOL.submit(task);
-
-        // put future to map
-        FUTURE_MAP.putIfAbsent(requestId, tinyFuture);
+        THREAD_POOL.submit(tinyFuture.task());
         return tinyFuture;
     }
 
@@ -70,8 +80,15 @@ public class TinyFuture implements Future<Object> {
      *
      * @param requestId Request unique identifier
      */
-    public static void removeTinyFuture(String requestId) {
-        FUTURE_MAP.remove(requestId);
+    public static TinyFuture removeTinyFuture(String requestId) {
+        return FUTURE_MAP.remove(requestId);
+    }
+
+    /**
+     * @return {@code TinyTask}
+     */
+    public TinyTask task() {
+        return task;
     }
 
 

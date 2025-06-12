@@ -41,7 +41,7 @@ public class RequestHandler {
         }
 
         // async handle request
-        return TinyFuture.addTinyFuture(String.valueOf(request.getId()), () -> doHandleRequest(request));
+        return TinyFuture.supplyAsync(() -> doHandleRequest(request));
     }
 
     /**

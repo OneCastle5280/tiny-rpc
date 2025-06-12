@@ -10,7 +10,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class TinyResponse {
     public static final Byte OK = 10;
-    public static final Byte ERROR = 30;
+    public static final Byte ERROR = 20;
 
     public TinyResponse(){}
 
