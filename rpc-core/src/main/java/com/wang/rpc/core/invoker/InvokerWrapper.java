@@ -1,4 +1,4 @@
-package com.wang.rpc.core.exchange.invoker;
+package com.wang.rpc.core.invoker;
 
 import com.wang.rpc.core.exchange.filter.FilterChain;
 
