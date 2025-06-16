@@ -21,11 +21,6 @@ import java.util.concurrent.*;
 @Slf4j
 public class RequestHandler {
 
-    /**
-     * requestId ==> completableFuture
-     */
-    private static final Map<String, CompletableFuture<Object>> FUTURE_MAP = new ConcurrentHashMap<>();
-
     public RequestHandler() {
     }
 
@@ -80,7 +75,5 @@ public class RequestHandler {
                 ;
 
     }
-
-
 
 }

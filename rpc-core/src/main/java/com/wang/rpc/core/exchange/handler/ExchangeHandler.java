@@ -24,6 +24,12 @@ public class ExchangeHandler {
         this.responseHandler = new ResponseHandler();
     }
 
+    /**
+     * receive msg from transport channel
+     *
+     * @param channel
+     * @param msg
+     */
     public void receive(TinyChannel channel, Object msg) {
         if (msg instanceof TinyRequest) {
             // request

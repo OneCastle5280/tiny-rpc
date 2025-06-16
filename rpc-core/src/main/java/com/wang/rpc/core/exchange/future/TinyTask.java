@@ -36,7 +36,17 @@ public class TinyTask extends FutureTask<Object> {
         listeners.add(listener);
     }
 
-    @Override
+    /**
+     * complete task
+     *
+     * @param result
+     */
+    public void complete(Object result) {
+        // set result
+        this.set(result);
+    }
+
+        @Override
     protected void done() {
         if (listeners.isEmpty()) {
             // noting

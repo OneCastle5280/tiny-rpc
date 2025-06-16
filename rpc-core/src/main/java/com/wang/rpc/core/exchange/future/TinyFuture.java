@@ -107,6 +107,10 @@ public class TinyFuture implements Future<Object> {
         });
     }
 
+    public void complete(Object result) {
+        task.complete(result);
+    }
+
     @Override
     public boolean cancel(boolean mayInterruptIfRunning) {
         return task.cancel(mayInterruptIfRunning);

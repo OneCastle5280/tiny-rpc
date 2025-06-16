@@ -2,7 +2,6 @@ package com.wang.rpc.core.exchange.handler;
 
 import com.wang.rpc.core.exchange.domain.TinyResponse;
 import com.wang.rpc.core.exchange.future.TinyFuture;
-import com.wang.rpc.core.exchange.future.TinyTask;
 
 /**
  * response handler
@@ -39,16 +38,30 @@ public class ResponseHandler {
 
     }
 
+    /**
+     * response status is ok, complete task with result
+     *
+     * @param future
+     * @param response
+     */
     private void handleWhenSuccess(TinyFuture future, TinyResponse response){
         if (future == null) {
             return;
         }
-        future.task()
+        future.task().complete(response.getStatus());
     }
 
+    /**
+     * response status is error, complete task with errMsg
+     *
+     * @param future
+     * @param response
+     */
     private void handleWhenError(TinyFuture future, TinyResponse response){
-
-
+        if (future == null) {
+            return;
+        }
+        future.task().complete(response.getErrMsg());
     }
 
 
