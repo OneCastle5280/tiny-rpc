@@ -11,10 +11,15 @@ import com.wang.rpc.core.exchange.domain.InvokeResult;
 public interface Invoker {
 
     /**
-     * invoke
+     * @return service implement interfaces
+     */
+    Class<?>[] getInterfaces();
+
+    /**
+     * service invoke
      *
      * @param invocation invocation info
-     * @return
+     * @return invoke result
      */
     InvokeResult invoke(Invocation invocation);
 }

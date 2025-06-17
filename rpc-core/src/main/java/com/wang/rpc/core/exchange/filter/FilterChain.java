@@ -61,6 +61,12 @@ public class FilterChain {
 
             // wrap filter to invoker
             nextInvoker = new Invoker() {
+
+                @Override
+                public Class<?>[] getInterfaces() {
+                    return filter.getClass().getInterfaces();
+                }
+
                 @Override
                 public InvokeResult invoke(Invocation invocation) {
                     return filter.invoke(finalNextInvoker, invocation);

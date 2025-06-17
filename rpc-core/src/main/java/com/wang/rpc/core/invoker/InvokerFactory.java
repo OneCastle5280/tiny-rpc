@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author wangjiabao
  */
-public class InvokerFactory {
+public class InvokerFactory<T> {
 
     private InvokerFactory(){}
 
@@ -20,7 +20,7 @@ public class InvokerFactory {
     /**
      * invokerUniqueKey -> invokerWrapper
      */
-    private static final Map<String, InvokerWrapper> INVOKER_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, InvokerWrapper<?>> INVOKER_MAP = new ConcurrentHashMap<>();
 
 
     /**
@@ -33,7 +33,7 @@ public class InvokerFactory {
      */
     public void registerInvoker(String serviceName, String methodName, String version, Invoker invoker) {
         String uniqueKey = invokerUniqueKey(serviceName, methodName, version);
-        INVOKER_MAP.putIfAbsent(uniqueKey, new InvokerWrapper(invoker));
+        INVOKER_MAP.putIfAbsent(uniqueKey, new InvokerWrapper<>(invoker));
     }
 
 
