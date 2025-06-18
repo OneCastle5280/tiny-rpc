@@ -12,11 +12,13 @@ import lombok.experimental.Accessors;
  */
 @Data
 @Accessors(chain = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class Invocation {
     /**
-     * service name
+     * interface name
      */
-    private String serviceName;
+    private String interfaceName;
     /**
      * method name
      */

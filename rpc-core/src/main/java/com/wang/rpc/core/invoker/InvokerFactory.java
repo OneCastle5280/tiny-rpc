@@ -20,33 +20,28 @@ public class InvokerFactory<T> {
     /**
      * invokerUniqueKey -> invokerWrapper
      */
-    private static final Map<String, InvokerWrapper<?>> INVOKER_MAP = new ConcurrentHashMap<>();
+    private static final Map<String, InvokerWrapper> INVOKER_MAP = new ConcurrentHashMap<>();
 
 
     /**
      * register invoker
-     *
-     * @param serviceName
-     * @param methodName
-     * @param version
-     * @param invoker
      */
-    public void registerInvoker(String serviceName, String methodName, String version, Invoker invoker) {
-        String uniqueKey = invokerUniqueKey(serviceName, methodName, version);
-        INVOKER_MAP.putIfAbsent(uniqueKey, new InvokerWrapper<>(invoker));
+    public void registerInvoker(String interfaceName, String methodName, String version, Invoker invoker) {
+        String uniqueKey = invokerUniqueKey(interfaceName, methodName, version);
+        INVOKER_MAP.putIfAbsent(uniqueKey, new InvokerWrapper(invoker));
     }
 
 
     /**
      * build invoker unique key
      *
-     * @param serviceName service name
+     * @param interfaceName interface name
      * @param methodName method name
-     * @param version version
+     * @param version getVersion
      * @return
      */
-    public static String invokerUniqueKey(String serviceName, String methodName, String version) {
-        return serviceName + CONNECTOR + methodName + CONNECTOR + version;
+    public static String invokerUniqueKey(String interfaceName, String methodName, String version) {
+        return interfaceName + CONNECTOR + methodName + CONNECTOR + version;
     }
 
     /**

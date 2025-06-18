@@ -14,6 +14,9 @@ import java.lang.reflect.Method;
  */
 public class JdkInvocationHandler implements InvocationHandler {
 
+    public static final String TO_STRING = "toString";
+    public static final String HASH_CODE = "hashCode";
+    public static final String EQUALS = "equals";
     /**
      * proxy target invoker
      */
@@ -25,13 +28,32 @@ public class JdkInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-        // todo skip special method, eg hashCode()、equals()
+        if (method.getDeclaringClass() == Object.class) {
+            // object method skip
+            return method.invoke(this.invoker, args);
+        }
+        // skip special method, eg hashCode()、equals()
         String methodName = method.getName();
-        Invocation invocation = new Invocation();
-        invocation.setServiceName();
-        invocation.setMethodName(methodName);
-        invocation.setParams(args);
-        invocation.setParamTypes()
+        Class<?>[] parameterTypes = method.getParameterTypes();
+        if (parameterTypes.length == 0) {
+            if (TO_STRING.equals(methodName)) {
+                return this.invoker.toString();
+            } else if (HASH_CODE.equals(methodName)) {
+                return this.invoker.hashCode();
+            }
+        } else if (parameterTypes.length == 1 && EQUALS.equals(methodName)) {
+            return this.invoker.equals(args[0]);
+        }
+        // rpc invoke
+        Invocation invocation = new Invocation(
+                this.invoker.getInterface().getName(),
+                methodName,
+                this.invoker.getVersion(),
+                parameterTypes,
+                args
+        );
+
+        // actual invoke
         InvokeResult result = this.invoker.invoke(invocation);
         return result;
     }

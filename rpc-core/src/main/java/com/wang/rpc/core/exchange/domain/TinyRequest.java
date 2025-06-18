@@ -14,9 +14,9 @@ public class TinyRequest {
      */
     private Long id;
     /**
-     * service name
+     * interface name
      */
-    private String serviceName;
+    private String interfaceName;
     /**
      * method name
      */

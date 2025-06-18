@@ -14,6 +14,6 @@ public class JdkProxyFactory implements ProxyFactory {
 
     @Override
     public <T> T getProxy(Invoker invoker) {
-        return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), invoker.getInterfaces(), new JdkInvocationHandler(invoker));
+        return (T) Proxy.newProxyInstance(Thread.currentThread().getContextClassLoader(), new Class<?>[]{invoker.getInterface()}, new JdkInvocationHandler(invoker));
     }
 }

@@ -45,7 +45,7 @@ public class RequestHandler {
     private Object doHandleRequest(TinyRequest request) {
         InvokeResult result = new InvokeResult();
         try {
-            result = InvokerFactory.getInvoker(request.getServiceName(), request.getMethodName(), request.getVersion())
+            result = InvokerFactory.getInvoker(request.getInterfaceName(), request.getMethodName(), request.getVersion())
                     .invoke(this.convertToInvocation(request));
         } catch (InvokerNotFound e) {
             log.error("[RequestHandler] doHandleRequest err", e);
@@ -64,7 +64,7 @@ public class RequestHandler {
         }
 
         return new Invocation()
-                .setServiceName(request.getServiceName())
+                .setInterfaceName(request.getInterfaceName())
                 .setMethodName(request.getMethodName())
                 .setVersion(request.getVersion())
                 .setParamTypes(request.getParamTypes())
