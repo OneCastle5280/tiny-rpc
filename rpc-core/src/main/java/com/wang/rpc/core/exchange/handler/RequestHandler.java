@@ -6,6 +6,7 @@ import com.wang.rpc.core.exchange.domain.InvokeResult;
 import com.wang.rpc.core.exchange.domain.TinyRequest;
 import com.wang.rpc.core.exchange.future.TinyFuture;
 import com.wang.rpc.core.invoker.InvokerFactory;
+import com.wang.rpc.core.mapping.InvocationMapping;
 import com.wang.rpc.core.utils.ThrowableUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -46,7 +47,7 @@ public class RequestHandler {
         InvokeResult result = new InvokeResult();
         try {
             result = InvokerFactory.getInvoker(request.getInterfaceName(), request.getMethodName(), request.getVersion())
-                    .invoke(this.convertToInvocation(request));
+                    .invoke(InvocationMapping.convertToInvocation(request));
         } catch (InvokerNotFound e) {
             log.error("[RequestHandler] doHandleRequest err", e);
             result.setException(e);
@@ -58,19 +59,6 @@ public class RequestHandler {
         return result;
     }
 
-    private Invocation convertToInvocation(TinyRequest request) {
-        if (request == null) {
-            return null;
-        }
 
-        return new Invocation()
-                .setInterfaceName(request.getInterfaceName())
-                .setMethodName(request.getMethodName())
-                .setVersion(request.getVersion())
-                .setParamTypes(request.getParamTypes())
-                .setParams(request.getParams())
-                ;
-
-    }
 
 }

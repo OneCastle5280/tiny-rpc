@@ -78,6 +78,12 @@ public class ExchangeHandler {
         }
     }
 
+    /**
+     * send response to channel
+     *
+     * @param channel
+     * @param response
+     */
     private void reply(TinyChannel channel, TinyResponse response) {
         try {
             channel.send(response);

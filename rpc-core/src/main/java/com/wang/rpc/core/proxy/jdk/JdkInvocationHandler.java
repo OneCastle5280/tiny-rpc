@@ -2,6 +2,7 @@ package com.wang.rpc.core.proxy.jdk;
 
 import com.wang.rpc.core.exchange.domain.Invocation;
 import com.wang.rpc.core.exchange.domain.InvokeResult;
+import com.wang.rpc.core.exchange.handler.ExchangeHandler;
 import com.wang.rpc.core.invoker.Invoker;
 
 import java.lang.reflect.InvocationHandler;
@@ -32,7 +33,7 @@ public class JdkInvocationHandler implements InvocationHandler {
             // object method skip
             return method.invoke(this.invoker, args);
         }
-        // skip special method, eg hashCode()、equals()
+        // skip special method, eg hashCode(),equals()
         String methodName = method.getName();
         Class<?>[] parameterTypes = method.getParameterTypes();
         if (parameterTypes.length == 0) {
@@ -44,7 +45,9 @@ public class JdkInvocationHandler implements InvocationHandler {
         } else if (parameterTypes.length == 1 && EQUALS.equals(methodName)) {
             return this.invoker.equals(args[0]);
         }
-        // rpc invoke
+
+
+        // build invocation
         Invocation invocation = new Invocation(
                 this.invoker.getInterface().getName(),
                 methodName,
@@ -53,8 +56,13 @@ public class JdkInvocationHandler implements InvocationHandler {
                 args
         );
 
-        // actual invoke
-        InvokeResult result = this.invoker.invoke(invocation);
-        return result;
+        // do invoke
+        return this.doInvoke(invocation);
+    }
+
+
+    private InvokeResult doInvoke(Invocation invocation) {
+        // rpc invoke
+        return this.invoker.invoke(invocation);
     }
 }
