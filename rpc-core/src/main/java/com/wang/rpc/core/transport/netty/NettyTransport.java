@@ -23,6 +23,6 @@ public class NettyTransport implements Transport {
 
     @Override
     public Client connect(SocketAddress socketAddress) {
-        return new NettyClient(socketAddress).connect();
+        return null;
     }
 }

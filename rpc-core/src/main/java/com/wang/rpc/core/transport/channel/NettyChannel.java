@@ -1,10 +1,7 @@
-package com.wang.rpc.core.transport.netty;
+package com.wang.rpc.core.transport.channel;
 
-import com.wang.rpc.core.channel.TinyChannel;
-import com.wang.rpc.core.exchange.domain.TinyResponse;
 import io.netty.channel.Channel;
 
-import java.net.SocketAddress;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,8 +21,14 @@ public class NettyChannel implements TinyChannel {
      */
     public static final Map<Channel, NettyChannel> CHANNEL_MAP = new ConcurrentHashMap<>();
 
+
     public static NettyChannel getOrAddChannel(Channel ch) {
         return CHANNEL_MAP.putIfAbsent(ch, new NettyChannel(ch));
+    }
+
+    @Override
+    public boolean isActive() {
+        return this.channel.isActive();
     }
 
     @Override

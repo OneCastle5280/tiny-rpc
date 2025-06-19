@@ -60,14 +60,14 @@ public class FilterChain {
             final Invoker finalNextInvoker = nextInvoker;
 
             // wrap filter to invoker
-            nextInvoker = new Invoker() {
-
-
-                @Override
-                public InvokeResult invoke(Invocation invocation) {
-                    return filter.invoke(finalNextInvoker, invocation);
-                }
-            };
+//            nextInvoker = new Invoker() {
+//
+//
+//                @Override
+//                public InvokeResult invoke(Invocation invocation) {
+//                    return filter.invoke(finalNextInvoker, invocation);
+//                }
+//            };
         }
 
         HAD_BUILD_FILTER_CHAIN.add(invoker);

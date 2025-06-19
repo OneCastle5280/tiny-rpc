@@ -1,7 +1,7 @@
 package com.wang.rpc.core.transport.netty.handler;
 
 import com.wang.rpc.core.exchange.handler.ExchangeHandler;
-import com.wang.rpc.core.transport.netty.NettyChannel;
+import com.wang.rpc.core.transport.channel.NettyChannel;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
