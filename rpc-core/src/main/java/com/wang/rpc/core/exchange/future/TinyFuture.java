@@ -50,17 +50,6 @@ public class TinyFuture implements Future<Object> {
     }
 
     /**
-     * add callable task to FutureMap
-     *
-     * @param requestId     FutureMap key
-     * @param callable      callable task
-     * @return
-     */
-    public static TinyFuture addToFutureMap(String requestId, Callable<Object> callable) {
-        return FUTURE_MAP.putIfAbsent(requestId, new TinyFuture(callable));
-    }
-
-    /**
      * supply async callable task
      *
      * @param callable
@@ -72,6 +61,20 @@ public class TinyFuture implements Future<Object> {
 
         // submit task
         THREAD_POOL.submit(tinyFuture.task());
+        return tinyFuture;
+    }
+
+    /**
+     * add tinyFuture
+     *
+     * @param requestId requestId
+     * @param callable task
+     * @return
+     */
+    public static TinyFuture addTinyFuture(String requestId, Callable<Object> callable) {
+        TinyFuture tinyFuture = supplyAsync(callable);
+
+        FUTURE_MAP.putIfAbsent(requestId, tinyFuture);
         return tinyFuture;
     }
 

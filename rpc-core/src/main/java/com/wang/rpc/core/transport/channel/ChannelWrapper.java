@@ -18,19 +18,19 @@ public class ChannelWrapper {
     /**
      * LoadBalance
      */
-    private final LoadBalance<TinyChannel> loadBalance;
+    private static final LoadBalance<TinyChannel> loadBalance;
     /**
      * /host:port ==> {@link TinyChannel}
      * eg:
      *   /127.0.0.1:8080 ==> {@link TinyChannel}
      */
-    private final Map<String, TinyChannel> channelMap;
+    private static final Map<String, TinyChannel> channelMap;
     /**
      * index for load balance
      */
-    private final AtomicInteger index;
+    private static final AtomicInteger index;
 
-    public ChannelWrapper() {
+    static {
         index = new AtomicInteger(0);
         channelMap = new ConcurrentHashMap<>();
         loadBalance = list -> {
@@ -40,6 +40,14 @@ public class ChannelWrapper {
         };
     }
 
+    public ChannelWrapper() {
+    }
+
+    /**
+     * get all {@code TinyChannel}
+     *
+     * @return
+     */
     public List<TinyChannel> getChannels() {
         return Lists.newArrayList(channelMap.values());
     }

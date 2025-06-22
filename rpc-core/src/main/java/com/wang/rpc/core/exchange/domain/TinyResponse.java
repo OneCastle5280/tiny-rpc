@@ -14,14 +14,14 @@ public class TinyResponse {
 
     public TinyResponse(){}
 
-    public TinyResponse(Long id) {
+    public TinyResponse(String id) {
         this.id = id;
     }
 
     /**
      * request id
      */
-    private Long id;
+    private String id;
 
     /**
      * status

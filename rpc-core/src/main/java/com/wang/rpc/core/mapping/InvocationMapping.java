@@ -32,15 +32,17 @@ public class InvocationMapping {
     /**
      * {@code Invocation} convertTo {@code TinyRequest}
      *
+     * @param requestId
      * @param invocation
      * @return
      */
-    public static TinyRequest convertToTinyRequest(Invocation invocation) {
+    public static TinyRequest convertToTinyRequest(String requestId, Invocation invocation) {
         if (invocation == null) {
             return null;
         }
 
         return new TinyRequest()
+                .setId(requestId)
                 .setInterfaceName(invocation.getInterfaceName())
                 .setMethodName(invocation.getMethodName())
                 .setVersion(invocation.getVersion())

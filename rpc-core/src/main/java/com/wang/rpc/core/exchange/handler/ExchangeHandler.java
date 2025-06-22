@@ -72,7 +72,7 @@ public class ExchangeHandler {
             reply(channel, response);
         } finally {
             // remove TinyFuture
-            TinyFuture.removeTinyFuture(String.valueOf(request.getId()));
+            TinyFuture.removeTinyFuture(request.getId());
         }
     }
 

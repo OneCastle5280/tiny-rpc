@@ -33,7 +33,6 @@ public class NettyChannel implements TinyChannel {
 
     @Override
     public void send(Object msg) throws RuntimeException{
-        // find worker channel to send msg
         this.channel.writeAndFlush(msg);
     }
 }

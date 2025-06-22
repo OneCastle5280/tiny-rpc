@@ -1,14 +1,15 @@
 package com.wang.rpc.core.exchange;
 
-import com.wang.rpc.core.exchange.domain.Invocation;
-import com.wang.rpc.core.mapping.InvocationMapping;
+import com.wang.rpc.core.exchange.domain.TinyRequest;
+import com.wang.rpc.core.exchange.future.TinyFuture;
 import com.wang.rpc.core.transport.channel.ChannelWrapper;
-import com.wang.rpc.core.transport.channel.TinyChannel;
 
 /**
  * @author wangjiabao
  */
 public class ClientExchange implements Exchange{
+
+    public static final ClientExchange INSTANCE = new ClientExchange();
 
     private final ChannelWrapper channelWrapper;
 
@@ -19,11 +20,13 @@ public class ClientExchange implements Exchange{
     /**
      * send request to channel
      *
-     * @param invocation
+     * @param request
      */
-    public void sendRequest(Invocation invocation) {
-        TinyChannel channel = this.channelWrapper.getWithLoadBalance();
-
-        channel.send(InvocationMapping.convertToTinyRequest(invocation));
+    public TinyFuture sendRequest(TinyRequest request) {
+        return TinyFuture.addTinyFuture(request.getId(), () -> {
+            // send msg
+            this.channelWrapper.getWithLoadBalance().send(request);
+            return null;
+        });
     }
 }

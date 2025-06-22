@@ -1,5 +1,7 @@
 package com.wang.rpc.core.exchange.domain;
 
+import com.wang.rpc.core.enums.InvokeMode;
+import com.wang.rpc.core.enums.InvokerType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,4 +37,8 @@ public class Invocation {
      * params
      */
     private Object[] params;
+    /**
+     * invoke mode
+     */
+    private InvokeMode invokeMode;
 }

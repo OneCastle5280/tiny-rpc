@@ -1,24 +1,26 @@
 package com.wang.rpc.core.exchange.domain;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
-
 /**
  * @author wangjiabao
  */
-@Data
-@Accessors(chain = true)
-public class InvokeResult {
+public interface InvokeResult {
     /**
-     * handle result
+     * set result
+     *
+     * @param result
      */
-    private Object result;
+    void setResult(Object result);
+
     /**
-     * exception
+     * set exception
+     *
+     * @param t
      */
-    private Throwable exception;
+    void setException(Throwable t);
+
     /**
-     * err message
+     * if exception is not null, return exception, else return result
+     *
      */
-    private String errMessage;
+    Object getResult();
 }

@@ -12,7 +12,7 @@ public class TinyRequest {
     /**
      * request id
      */
-    private Long id;
+    private String id;
     /**
      * interface name
      */

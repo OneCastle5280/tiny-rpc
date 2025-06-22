@@ -29,11 +29,13 @@ public class JdkInvocationHandler implements InvocationHandler {
 
     @Override
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        // if method is belong object class, skip proxy
         if (method.getDeclaringClass() == Object.class) {
             // object method skip
             return method.invoke(this.invoker, args);
         }
-        // skip special method, eg hashCode(),equals()
+
+        // skip proxy special method, eg hashCode(),equals()
         String methodName = method.getName();
         Class<?>[] parameterTypes = method.getParameterTypes();
         if (parameterTypes.length == 0) {
@@ -45,7 +47,6 @@ public class JdkInvocationHandler implements InvocationHandler {
         } else if (parameterTypes.length == 1 && EQUALS.equals(methodName)) {
             return this.invoker.equals(args[0]);
         }
-
 
         // build invocation
         Invocation invocation = new Invocation(
